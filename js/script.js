@@ -141,6 +141,7 @@ const familyColor =[
   }
 ];
 
+// Aggiungo agli oggetti il colore per categoria
 const iconsColored = icons.map((element) => {
   familyColor.forEach((item) => {
     const { category, color} = item;
@@ -150,39 +151,40 @@ const iconsColored = icons.map((element) => {
   });
   return element;
 });
-console.log(iconsColored);
 
+
+// Inserisco nella pagina le icone colorate
 getIcons(iconsContainer, iconsColored);
+
 // Milestone 3
 // Creiamo una select con i tipi di icone e usiamola per filtrare le icone
 
 const select = $('#type');
-familyColor.forEach((item) => {
-  const {category} = item;
-  const optionsCategory = (`<option value="${category}">${category}</option>`);
-  select.append(optionsCategory);
-});
+setCategories(select, familyColor);
 
+
+function setCategories (inputCategory, array){
+  array.forEach((item) => {
+    const {category} = item;
+    const optionsCategory = (`<option value="${category}">${category}</option>`);
+    inputCategory.append(optionsCategory);
+  });
+}
 
 select.change(function(){
   const optionsValue = $(this).val();
   iconsContainer.html('');
   if ( optionsValue != '') {
-    iconsColored.forEach((item) => {
-      const { family, prefix, name, category, color } = item;
-      const optionsHtml = `<div>
-        <i class="${family} ${prefix}${name}" style="color:${color};"></i>
-        <div class="title">${name}</div>
-      </div>`;
-      if ( optionsValue == category ) {
-        iconsContainer.append(optionsHtml);
-      }
+    let iconsCategory = iconsColored.filter((item) => {
+      return ( optionsValue == item.category )
     });
+    getIcons(iconsContainer, iconsCategory);
   } else {
     getIcons(iconsContainer, iconsColored);
   }
 });
 
+// FUNZIONI
 function getIcons(container, array){
   array.forEach((item) => {
     const {name, family, prefix, color} = item;
